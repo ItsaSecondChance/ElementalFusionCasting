@@ -1,0 +1,54 @@
+name: Build Elemental Fusion Casting
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Bootstrap vcpkg
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP "vcpkg"
+          git clone https://github.com/microsoft/vcpkg.git $root
+          & (Join-Path $root "bootstrap-vcpkg.bat") -disableMetrics
+          "VCPKG_ROOT=$root" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Configure
+        shell: pwsh
+        run: cmake -S . -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static-md -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compile
+        run: cmake --build build --config Release
+
+      - name: Package Vortex archive
+        shell: pwsh
+        run: |
+          $package = Join-Path $env:RUNNER_TEMP "ElementalFusionCasting"
+          New-Item -ItemType Directory -Force -Path (Join-Path $package "Data/SKSE/Plugins") | Out-Null
+          Copy-Item "build/ElementalFusionCasting.dll" (Join-Path $package "Data/SKSE/Plugins/ElementalFusionCasting.dll")
+          Copy-Item "README.md" $package
+          Compress-Archive -Path (Join-Path $package "*") -DestinationPath "ElementalFusionCasting-test.zip" -Force
+
+      - name: Upload installable archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ElementalFusionCasting-test
+          path: ElementalFusionCasting-test.zip
+          if-no-files-found: error

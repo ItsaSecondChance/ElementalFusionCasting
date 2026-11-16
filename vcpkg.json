@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "elemental-fusion-casting",
+  "version-string": "0.1.0",
+  "description": "Mixed-element dual casting SKSE plugin for Skyrim AE",
+  "license": "GPL-3.0-or-later",
+  "builtin-baseline": "ee12231b20c95013c6638d845d04c91559a1d1ff",
+  "dependencies": ["directxtk", "rapidcsv", "spdlog"]
+}
