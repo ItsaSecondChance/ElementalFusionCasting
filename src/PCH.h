@@ -21,3 +21,7 @@
 #include <RE/Skyrim.h>
 #include <REL/Relocation.h>
 #include <SKSE/SKSE.h>
+
+// CommonLibSSE-NG's generated SKSEPluginInfo metadata uses the "sv" suffix.
+// The generated translation unit needs this namespace visible through the PCH.
+using namespace std::literals;
