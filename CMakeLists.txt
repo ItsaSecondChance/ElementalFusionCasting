@@ -26,6 +26,10 @@ add_commonlibsse_plugin(
 )
 
 set_target_properties(ElementalFusionCasting PROPERTIES OUTPUT_NAME "ElementalFusionCasting")
+
+# CommonLibSSE's generated plugin metadata source also includes REL headers.
+# Force a complete standard-library precompiled header before every target source.
+target_precompile_headers(ElementalFusionCasting PRIVATE src/PCH.h)
 target_compile_definitions(
     ElementalFusionCasting PRIVATE UNICODE _UNICODE NOMINMAX WIN32_LEAN_AND_MEAN)
 if(MSVC)
