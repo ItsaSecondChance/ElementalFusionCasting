@@ -8,11 +8,17 @@ on:
       - '.github/workflows/build-vpo.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: vpo-build
+          persist-credentials: true
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
@@ -35,3 +41,12 @@ jobs:
           name: VesselPhysicsOptimizer-KSP-1.12.5
           path: VesselPhysicsOptimizer_KSP_1.12.5.zip
           if-no-files-found: error
+      - name: Publish install archive to repository
+        run: |
+          mkdir -p releases
+          cp VesselPhysicsOptimizer_KSP_1.12.5.zip releases/VesselPhysicsOptimizer-0.1.0.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add releases/VesselPhysicsOptimizer-0.1.0.zip
+          git commit -m "Publish VPO 0.1.0 install archive" || exit 0
+          git push origin HEAD:vpo-build
