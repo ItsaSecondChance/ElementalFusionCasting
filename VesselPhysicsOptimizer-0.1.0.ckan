@@ -1,0 +1,27 @@
+{
+  "spec_version": "v1.34",
+  "identifier": "VesselPhysicsOptimizer",
+  "name": "Vessel Physics Optimizer",
+  "abstract": "Flight-scene connected-part visualization prototype for KSP 1.12.5.",
+  "author": [
+    "Second Chance"
+  ],
+  "version": "0.1.0",
+  "ksp_version": "1.12.5",
+  "release_status": "testing",
+  "download": "https://raw.githubusercontent.com/ItsaSecondChance/ElementalFusionCasting/vpo-build/releases/VesselPhysicsOptimizer-0.1.0.zip",
+  "resources": {
+    "repository": "https://github.com/ItsaSecondChance/ElementalFusionCasting"
+  },
+  "tags": [
+    "plugin",
+    "physics",
+    "utility"
+  ],
+  "install": [
+    {
+      "file": "GameData",
+      "install_to": "GameData"
+    }
+  ]
+}
