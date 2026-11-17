@@ -20,7 +20,7 @@
   ],
   "install": [
     {
-      "file": "GameData",
+      "file": "GameData/VesselPhysicsOptimizer",
       "install_to": "GameData"
     }
   ]
