@@ -1,0 +1,37 @@
+name: Build Vessel Physics Optimizer
+
+on:
+  push:
+    branches: [vpo-build]
+    paths:
+      - 'VesselPhysicsOptimizer/**'
+      - '.github/workflows/build-vpo.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Download KSP 1.12.5 reference assemblies
+        run: |
+          wget -q https://github.com/KSPModdingLibs/KSPLibs/raw/main/KSP-1.12.5.zip -O /tmp/ksp.zip
+          unzip -q /tmp/ksp.zip -d /tmp/ksp
+          test -f /tmp/ksp/KSP_x64_Data/Managed/Assembly-CSharp.dll
+      - name: Build plugin
+        run: dotnet build VesselPhysicsOptimizer/VesselPhysicsOptimizer.csproj -c Release -p:KSPBT_ManagedPath=/tmp/ksp/KSP_x64_Data/Managed
+      - name: Assemble installable GameData package
+        run: |
+          mkdir -p /tmp/vpo-package/GameData/VesselPhysicsOptimizer/Plugins
+          cp VesselPhysicsOptimizer/bin/Release/net472/VesselPhysicsOptimizer.dll /tmp/vpo-package/GameData/VesselPhysicsOptimizer/Plugins/
+          cp VesselPhysicsOptimizer/GameData/VesselPhysicsOptimizer/README-INSTALL.txt /tmp/vpo-package/GameData/VesselPhysicsOptimizer/
+          cd /tmp/vpo-package
+          zip -qr "$GITHUB_WORKSPACE/VesselPhysicsOptimizer_KSP_1.12.5.zip" GameData
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VesselPhysicsOptimizer-KSP-1.12.5
+          path: VesselPhysicsOptimizer_KSP_1.12.5.zip
+          if-no-files-found: error
