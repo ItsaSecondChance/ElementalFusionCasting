@@ -49,4 +49,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add releases/VesselPhysicsOptimizer-0.1.0.zip
           git commit -m "Publish VPO 0.1.0 install archive" || exit 0
+          git pull --rebase origin vpo-build
           git push origin HEAD:vpo-build
